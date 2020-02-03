@@ -37,5 +37,5 @@ public class Ch523Application {
         new SpringApplicationBuilder(Ch523Application.class)
                 .showBanner(true)
                 .run(args);
-    }
+    } 
 }
