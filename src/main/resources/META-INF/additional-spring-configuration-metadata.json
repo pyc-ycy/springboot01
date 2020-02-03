@@ -1,0 +1,18 @@
+{
+  "properties": [
+    {
+      "name": "author.name",
+      "type": "java.lang.String",
+      "description": "Description for author.name."
+    },
+    {
+      "name": "author.mail",
+      "type": "java.lang.String",
+      "description": "Description for author.mail."
+    },
+    {
+      "name": "author.age",
+      "type": "java.lang.String",
+      "description": "Description for author.age."
+    }
+  ] }
