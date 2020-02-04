@@ -7,6 +7,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
+import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
+import org.springframework.boot.context.embedded.ErrorPage;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Controller
 @SpringBootApplication
@@ -54,5 +60,15 @@ public class Ch523Application {
         new SpringApplicationBuilder(Ch523Application.class)
                 .showBanner(true)
                 .run(args);
+    }
+
+//    @Component
+    public static class CustomServerContainer implements EmbeddedServletContainerCustomizer{
+        @Override
+        public void customize(ConfigurableEmbeddedServletContainer container) {
+            container.setPort(8888);    //设置启动端口
+            container.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND,"/404.html"));   //设置错误页面
+            container.setSessionTimeout(10, TimeUnit.MINUTES);  //设置访问超时时间
+        }
     }
 }
