@@ -2,6 +2,10 @@ package com.wisely.ch5_2_3;
 
 import com.wisely.ch5_2_3.bean.Person;
 import com.wisely.ch5_2_3.config.AuthorSettings;
+import org.apache.catalina.Context;
+import org.apache.catalina.connector.Connector;
+import org.apache.tomcat.util.descriptor.web.SecurityCollection;
+import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -36,31 +40,51 @@ public class Ch523Application {
 //    private AuthorSettings authorSettings;
 
     @RequestMapping("/")
-    public String index(Model model){
-        Person single = new Person("aa",11);
+    public String index(Model model) {
+        Person single = new Person("aa", 11);
         List<Person> people = new ArrayList<>();
-        Person p1 = new Person("xx",11);
-        Person p2 = new Person("yy",22);
-        Person p3 = new Person("zz",33);
+        Person p1 = new Person("xx", 11);
+        Person p2 = new Person("yy", 22);
+        Person p3 = new Person("zz", 33);
         people.add(p1);
         people.add(p2);
         people.add(p3);
-        model.addAttribute("singlePerson",single);
-        model.addAttribute("people",people);
+        model.addAttribute("singlePerson", single);
+        model.addAttribute("people", people);
         return "index";
 //        return "author name is"+authorSettings.getName()+", age is:"+authorSettings.getAge()
 //                +", mail is:"+authorSettings.getMail();
 //        return "Spring Boot Demo Project, "+"author name is:"+authorName
 //                +", author mail is:"+authorMail;
     }
-//    @Bean
-//    public EmbeddedServletContainerFactory servletContainer(){
-//        TomcatEmbeddedServletContainerFactory factory = new TomcatEmbeddedServletContainerFactory();
-//        factory.setPort(8888);
-//        factory.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND,"/404.html"));
-//        factory.setSessionTimeout(10,TimeUnit.MINUTES);
-//        return factory;
-//    }
+
+    @Bean
+    public EmbeddedServletContainerFactory servletContainer() {
+        TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory() {
+            @Override
+            protected void postProcessContext(Context context) {
+                SecurityConstraint securityConstraint = new SecurityConstraint();
+                securityConstraint.setUserConstraint("CONFIDENTIAL");
+                SecurityCollection collection = new SecurityCollection();
+                collection.addPattern("/*");
+                securityConstraint.addCollection(collection);
+                context.addConstraint(securityConstraint);
+            }
+        };
+
+        tomcat.addAdditionalTomcatConnectors(httpConnector());
+        return tomcat;
+    }
+
+    @Bean
+    public Connector httpConnector() {
+        Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
+        connector.setScheme("http");
+        connector.setPort(8081);
+        connector.setSecure(false);
+        connector.setRedirectPort(8080);
+        return connector;
+    }
 
     public static void main(String[] args) {
 
@@ -73,13 +97,14 @@ public class Ch523Application {
                 .run(args);
     }
 
-//    @Component
-    public static class CustomServerContainer implements EmbeddedServletContainerCustomizer{
-        @Override
-        public void customize(ConfigurableEmbeddedServletContainer container) {
-            container.setPort(8888);    //设置启动端口
-            container.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND,"/404.html"));   //设置错误页面
-            container.setSessionTimeout(10, TimeUnit.MINUTES);  //设置访问超时时间
-        }
-    }
+
+    //    @Component
+//    public static class CustomServerContainer implements EmbeddedServletContainerCustomizer {
+//        @Override
+//        public void customize(ConfigurableEmbeddedServletContainer container) {
+//            container.setPort(8888);    //设置启动端口
+//            container.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/404.html"));   //设置错误页面
+//            container.setSessionTimeout(10, TimeUnit.MINUTES);  //设置访问超时时间
+//        }
+//    }
 }
