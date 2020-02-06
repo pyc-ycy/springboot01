@@ -19,14 +19,16 @@
     </label>
     <input type="submit"/>
 </form>
-
+<input type="button" value="离开" onclick="exit()"/>
 <script th:inline="javascript">
+    // 发送消息
     $('#ycyForm').submit(function(e){
         e.preventDefault();
         var text = $('#ycyForm').find('textarea[name="text"]').val();
         sendSpittle(text);
     });
 
+    //建立套接字
     var sock = new SockJS("/endpointChat"); //1
     var stomp = Stomp.over(sock);
     stomp.connect('guest', 'guest', function(frame) {
@@ -34,13 +36,18 @@
     });
 
 
-
+    //将接收到的消息显示出来
     function handleNotification(message) {
         $('#output').append("<b>Received: " + message.body + "</b><br/>")
     }
-
+    //发送消息
     function sendSpittle(text) {
         stomp.send("/chat", {}, text);//3
+    }
+    //退出聊天室
+    function exit(){
+        sock.close();
+        window.location.href="/login";
     }
     $('#stop').click(function() {sock.close()});
 </script>

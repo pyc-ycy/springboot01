@@ -42,6 +42,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("src/main/resources/static/**");
+        web.ignoring().antMatchers("src/main/resources/static/**"); //静态资源放行
     }
 }
