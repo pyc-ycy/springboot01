@@ -29,6 +29,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
+<!--        点对点式依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
 <!--        将 Tomcat 容器替换为 Jetty-->
 <!--        <dependency>-->
 <!--            <groupId>org.springframework.boot</groupId>-->
